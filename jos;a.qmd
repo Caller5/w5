@@ -98,14 +98,12 @@ From April to August, 40% of delayed flights in the NAS category are due to weat
 ```{python}
 late_aircraft_mean = df['num_of_delays_late_aircraft'].mean()
 df['num_of_delays_late_aircraft'] = df['num_of_delays_late_aircraft'].fillna(late_aircraft_mean)
-
 def calculate_weather_delays(row):
-    weather = row['num_of_delays_weather']  # 100% weather delays
+    weather = row['num_of_delays_weather']  
     late_aircraft = row['num_of_delays_late_aircraft'] * 0.30
     nas_factor = 0.40 if row['month'] in ['April', 'May', 'June', 'July', 'August'] else 0.65
     nas = row['num_of_delays_nas'] * nas_factor
     return weather + late_aircraft + nas
-
 df['total_weather_delays'] = df.apply(calculate_weather_delays, axis=1)
 
 df[['airport_name', 'month', 'num_of_delays_weather', 'num_of_delays_late_aircraft', 'num_of_delays_nas', 'total_weather_delays']].head()
@@ -123,11 +121,13 @@ weather_summary = df.groupby('airport_name').agg(
     total_flights=('num_of_flights_total', 'sum'),
     total_weather_delays=('total_weather_delays', 'sum')
 ).reset_index()
-
 weather_summary['proportion_delayed_by_weather'] = weather_summary['total_weather_delays'] / weather_summary['total_flights']
+ggplot(weather_summary, aes(x='airport_name', 
 
-ggplot(weather_summary, aes(x='airport_name', y='proportion_delayed_by_weather')) + \
-    geom_point(fill='skyblue') + \
+y='proportion_delayed_by_weather')) + \
+    geom_point() + \
     coord_flip() + \
     labs(title='Proportion of Flights Delayed by Weather by Airport', x='Airport', y='Proportion Delayed')
+
+df.head()
 ```
