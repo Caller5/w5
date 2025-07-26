@@ -129,5 +129,5 @@ y='proportion_delayed_by_weather')) + \
     coord_flip() + \
     labs(title='Proportion of Flights Delayed by Weather by Airport', x='Airport', y='Proportion Delayed')
 
-df.head()
+
 ```
